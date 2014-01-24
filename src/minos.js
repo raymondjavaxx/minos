@@ -1,30 +1,45 @@
 "use strict";
 
 var minos = function (selector) {
-  var matches = document.querySelectorAll(selector);
-  return new minos.Set(matches);
+  if (typeof selector === 'string') {
+    var matches = minos.find(selector);
+    return new minos.Set(matches);
+  }
+
+  if (selector instanceof Node) {
+    var elements = [selector];
+    return new minos.Set(elements);
+  }
+};
+
+minos.find = function (selector) {
+  return document.querySelectorAll(selector)
+};
+
+minos.plug = function (name, fn) {
+  minos.Set.prototype[name] = fn;
 };
 
 minos.Set = function (elements) {
   this.elements = elements;
 };
 
-minos.Set.prototype.each = function (fn) {
+minos.plug('each', function (fn) {
   for (var i = 0; i < this.elements.length; i+=1) {
     fn.call(this.elements[i], this.elements[i], i);
   }
   return this;
-};
+});
 
-minos.Set.prototype.get = function (i) {
+minos.plug('get', function (i) {
   return this.elements[i];
-};
+});
 
-minos.Set.prototype.appendTo = function (target) {
+minos.plug('appendTo', function (target) {
   var targetElement;
 
   if (typeof target == 'string') {
-    targetElement = document.querySelector(target);
+    targetElement = minos.find(target).shift();
   } else if (target instanceof minos.Set) {
     targetElement = target.get(0);
   } else if (target instanceof Node) {
@@ -38,21 +53,21 @@ minos.Set.prototype.appendTo = function (target) {
   }
 
   return this;
-};
+});
 
-minos.Set.prototype.remove = function () {
+minos.plug('remove', function () {
   return this.each(function (el, i) {
     if (el.parentNode) {
       el.parentNode.removeChild(el);
     }
   });
-};
+})
 
-minos.Set.prototype.length = function () {
+minos.plug('length', function () {
   return this.elements.length;
-};
+});
 
-minos.Set.prototype.addClass = function (klass) {
+minos.plug('addClass', function (klass) {
   return this.each(function (el, i) {
     var klasses = el.className.split(' ');
     if (klasses.indexOf(klass) === -1) {
@@ -60,6 +75,28 @@ minos.Set.prototype.addClass = function (klass) {
       el.className = klasses.join(' ');
     }
   });
-};
+});
+
+minos.plug('attr', function (name, value) {
+  // Getter
+  if (value === undefined) {
+    return this.get(0).getAttribute();
+  }
+
+  return this.each(function (el, i) {
+    el.setAttribute(name, value);
+  });
+});
+
+minos.plug('text', function (value) {
+  // Getter
+  if (value === undefined) {
+    return this.get(0).textContent;
+  }
+
+  return this.each(function (el, i) {
+    el.textContent = value;
+  });
+});
 
 window['minos'] = minos;
