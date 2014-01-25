@@ -39,7 +39,8 @@ minos.plug('appendTo', function (target) {
   var targetElement;
 
   if (typeof target == 'string') {
-    targetElement = minos.find(target).shift();
+    var matches = minos.find(target);
+    targetElement = matches[0];
   } else if (target instanceof minos.Set) {
     targetElement = target.get(0);
   } else if (target instanceof Node) {
@@ -61,7 +62,17 @@ minos.plug('remove', function () {
       el.parentNode.removeChild(el);
     }
   });
-})
+});
+
+minos.plug('clone', function () {
+  var elements = [];
+
+  this.each(function (el, i) {
+    elements.push(el.cloneNode(true));
+  });
+
+  return new minos.Set(elements);
+});
 
 minos.plug('length', function () {
   return this.elements.length;
