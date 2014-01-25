@@ -78,6 +78,19 @@ minos.plug('length', function () {
   return this.elements.length;
 });
 
+minos.plug('hasClass', function (klass) {
+  var result = false;
+
+  this.each(function (el, i) {
+    var klasses = el.className.split(' ');
+    if (klasses.indexOf(klass) !== -1) {
+      result = true;
+    }
+  });
+
+  return result;
+});
+
 minos.plug('addClass', function (klass) {
   return this.each(function (el, i) {
     var klasses = el.className.split(' ');
