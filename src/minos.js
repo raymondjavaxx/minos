@@ -101,6 +101,27 @@ minos.plug('addClass', function (klass) {
   });
 });
 
+minos.plug('removeClass', function (klass) {
+  return this.each(function (el, i) {
+    var klasses = el.className.split(' ');
+    if (klasses.indexOf(klass) !== -1) {
+      klasses.splice(klasses.indexOf(klass), 1);
+      el.className = klasses.join(' ');
+    }
+  });
+});
+
+minos.plug('toggleClass', function (klass) {
+  return this.each(function (el, i) {
+    var element = minos(el);
+    if (element.hasClass(klass)) {
+      element.removeClass(klass);
+    } else {
+      element.addClass(klass);
+    }
+  });
+});
+
 minos.plug('attr', function (name, value) {
   // Getter
   if (value === undefined) {
