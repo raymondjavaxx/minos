@@ -21,6 +21,18 @@
     minos.Set.prototype[name] = fn;
   };
 
+  minos.normalize = function (content) {
+    if (typeof content === 'string') {
+      return minos.parseHTML(content);
+    }
+
+    if (typeof content === 'array') {
+      return new minos.Set(content);
+    }
+
+    return content;
+  };
+
   minos.parseHTML = function (htmlString) {
     var wrapper = document.createElement('div');
     wrapper.innerHTML = htmlString;
@@ -45,7 +57,35 @@
   });
 
   minos.plug('get', function (i) {
+    if (i === undefined) {
+      return this.elements;
+    }
+
     return this.elements[i];
+  });
+
+  minos.plug('append', function (content) {
+    return this.each(function (el, i) {
+      minos.normalize(content).clone().each(function () {
+        el.appendChild(this);
+      });
+    });
+  });
+
+  minos.plug('before', function (content) {
+    return this.each(function (el, i) {
+      minos.normalize(content).clone().each(function () {
+        el.parentNode.insertBefore(this, el);
+      });
+    });
+  });
+
+  minos.plug('after', function (content) {
+    return this.each(function (el, i) {
+      minos.normalize(content).clone().each(function () {
+        el.parentNode.insertBefore(this, el.nextSibling);
+      });
+    });
   });
 
   minos.plug('appendTo', function (target) {
