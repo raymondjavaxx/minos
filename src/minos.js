@@ -22,10 +22,15 @@
   };
 
   minos.parseHTML = function (htmlString) {
-    var fragment = document.createDocumentFragment();
-    var wrapper = fragment.appendChild(document.createElement('div'));
+    var wrapper = document.createElement('div');
     wrapper.innerHTML = htmlString;
-    return new minos.Set(wrapper.childNodes);
+
+    var elements = [];
+    for (var i = 0; i < wrapper.childNodes.length; i+=1) {
+      elements.push(wrapper.childNodes[i].cloneNode(true));
+    }
+
+    return new minos.Set(elements);
   };
 
   minos.Set = function (elements) {
