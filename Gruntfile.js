@@ -13,7 +13,7 @@ module.exports = function(grunt) {
       }
     },
     jshint: {
-      all: ['src/<%= pkg.name %>.js']
+      all: ['src/<%= pkg.name %>.js', 'plugins/*.js', 'Gruntfile.js']
     }
   });
 

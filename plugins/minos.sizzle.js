@@ -1,8 +1,13 @@
-/**
+/*jshint newcap: false */
+
+/*!
  * minos.js plugin to use Sizzle as selector engine.
  */
-"use strict";
 
-minos.find = function (selector) {
-  return Sizzle(selector);
-};
+(function (minos) {
+  "use strict";
+
+  minos.find = function (selector) {
+    return Sizzle(selector);
+  };
+})(minos);
