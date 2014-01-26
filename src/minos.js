@@ -21,6 +21,13 @@
     minos.Set.prototype[name] = fn;
   };
 
+  minos.parseHTML = function (htmlString) {
+    var fragment = document.createDocumentFragment();
+    var wrapper = fragment.appendChild(document.createElement('div'));
+    wrapper.innerHTML = htmlString;
+    return new minos.Set(wrapper.childNodes);
+  };
+
   minos.Set = function (elements) {
     this.elements = elements;
   };
