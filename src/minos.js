@@ -88,6 +88,10 @@
     });
   });
 
+  minos.plug('replaceWith', function (content) {
+    return this.before(content).remove();
+  });
+
   minos.plug('appendTo', function (target) {
     var targetElement;
 
