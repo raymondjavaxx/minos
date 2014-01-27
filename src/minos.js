@@ -26,11 +26,21 @@
       return minos.parseHTML(content);
     }
 
-    if (typeof content === 'array') {
+    if (content instanceof Array) {
       return new minos.Set(content);
     }
 
     return content;
+  };
+
+  minos.dasherize = function (text) {
+    return text.replace(/[A-Z]/g, function (char, i) {
+      if (i === 0) {
+        return char.toLowerCase();
+      }
+
+      return '-' + char.toLowerCase();
+    });
   };
 
   minos.parseHTML = function (htmlString) {
@@ -198,6 +208,44 @@
 
     return this.each(function (el, i) {
       el.textContent = value;
+    });
+  });
+
+  minos.plug('css', function (property, value) {
+    // Getter
+    if (arguments.length < 2 && typeof property != 'object') {
+      var element = this.get(0);
+      var computed = window.getComputedStyle(element);
+
+      if (typeof property == 'string') {
+        return element.style[property] || computed.getPropertyValue(property);
+      }
+
+      if (property instanceof Array) {
+        var props = {};
+        for (var i = 0; i < property.length; i++) {
+          var p = property[i];
+          props[p] = element.style[p] || computed.getPropertyValue(p);
+        }
+        return props;
+      }
+    }
+
+    var css = [];
+    var hash = {};
+
+    if (typeof property == 'string') {
+      hash[property] = value;
+    } else {
+      hash = property;
+    }
+
+    for (var key in hash) {
+      css.push(minos.dasherize(key) + ':' + hash[key]);
+    }
+
+    return this.each(function (el, i) {
+      el.style.cssText += ';' + css.join(';');
     });
   });
 
