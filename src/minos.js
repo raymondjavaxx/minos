@@ -249,5 +249,27 @@
     });
   });
 
+  minos.plug('on', function (type, selector, listener) {
+    var matches = document.documentElement.matches ||
+                  document.documentElement.webkitMatchesSelector ||
+                  document.documentElement.mozMatchesSelector ||
+                  document.documentElement.msMatchesSelector;
+
+    if (typeof selector !== 'string') {
+      listener = selector;
+      selector = undefined;
+    }
+
+    var callback = function (e) {
+      if (selector === undefined || matches.call(e.target, selector)) {
+        listener.call(e.target, e);
+      }
+    };
+
+    return this.each(function (el, i) {
+      el.addEventListener(type, callback, false);
+    });
+  });
+
   w.minos = minos;
 })(window);
