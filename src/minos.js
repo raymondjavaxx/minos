@@ -281,5 +281,19 @@
     });
   });
 
+  minos.plug('trigger', function (eventName) {
+    var e;
+
+    if ((['click', 'mousedown', 'mouseup', 'mousemove']).indexOf(eventName) !== -1) {
+      e = new MouseEvent(eventName);
+    } else {
+      e = new Event(eventName);
+    }
+
+    return this.each(function (el, i) {
+      el.dispatchEvent(e);
+    });
+  });
+
   w.minos = minos;
 })(window);
