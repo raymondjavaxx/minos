@@ -11,6 +11,10 @@
       var elements = [selector];
       return new minos.Set(elements);
     }
+
+    if (typeof selector === 'function') {
+      minos(document).ready(selector);
+    }
   };
 
   minos.find = function (selector) {
@@ -58,6 +62,12 @@
   minos.Set = function (elements) {
     this.elements = elements;
   };
+
+  minos.plug('ready', function (fn) {
+    return this.each(function (el, i) {
+      el.addEventListener("DOMContentLoaded", fn);
+    });
+  });
 
   minos.plug('each', function (fn) {
     for (var i = 0; i < this.elements.length; i+=1) {
@@ -192,7 +202,7 @@
   minos.plug('attr', function (name, value) {
     // Getter
     if (value === undefined) {
-      return this.get(0).getAttribute();
+      return this.get(0).getAttribute(name);
     }
 
     return this.each(function (el, i) {
