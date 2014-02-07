@@ -271,7 +271,9 @@
     }
 
     var callback = function (e) {
-      if (selector === undefined || matches.call(e.target, selector)) {
+      if (selector === undefined) {
+        listener.call(this, e);
+      } else if (matches.call(e.target, selector)) {
         listener.call(e.target, e);
       }
     };
