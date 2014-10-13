@@ -297,5 +297,23 @@
     });
   });
 
+  minos.plug('children', function (selector) {
+    var elements = [];
+
+    this.each(function (el, i) {
+      if (selector) {
+        elements.push.apply(elements, el.querySelectorAll(selector));
+      } else {
+        elements.push.apply(elements, el.childNodes);
+      }
+    });
+
+    elements = elements.filter(function (el) {
+      return (el.nodeType === Node.ELEMENT_NODE);
+    });
+
+    return new minos.Set(elements);
+  });
+
   w.minos = minos;
 })(window);
