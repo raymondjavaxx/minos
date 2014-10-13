@@ -38,12 +38,12 @@
   };
 
   minos.dasherize = function (text) {
-    return text.replace(/[A-Z]/g, function (char, i) {
+    return text.replace(/[A-Z]/g, function (character, i) {
       if (i === 0) {
-        return char.toLowerCase();
+        return character.toLowerCase();
       }
 
-      return '-' + char.toLowerCase();
+      return '-' + character.toLowerCase();
     });
   };
 
